@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DriftBottle</title>
+
+  <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="lib/css/font-awesome.min.css">
+  <link href="lib/css/overwrite.css" rel="stylesheet">
+  <link href="lib/css/style.css" rel="stylesheet">
+  <script src=lib/js/jquery-3.3.1.min.js></script>
+  <script src=lib/js/nebPay.js></script>
+  <script src=lib/js/nebulas.js></script>
+
+</head>
+
+<body>
+  <div class="row">
+    <div class="col-md-2">
+      <div class="menu">
+        <div class="logo">
+          <a href="index.html"><h1>Drift Bottle</h1></a>
+          <span>No need huge slogan, we believe in less is better</span>
+        </div>
+        <div class="navbar-header">
+          <ul class="nav nav-pills nav-stacked">
+            <li role="presentation" ><a href="index.html">Drop a driftbottle</a></li>
+            <li role="presentation" ><a href="home.html">Get a driftbottle</a></li>
+            <li role="presentation" id="li2"><a href="#">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="graphics">
+    <div class="container">
+      <div class="center">
+        <h2>Give me a driftbottle</h2>
+        <p class="lead">Always listen to your heart because even though it's on your left side, it's always right.</p>
+      </div>
+      <div class="form-group">
+          <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" />
+      <div class="validation"></div>
+        <button type="submit" name="submit" class="btn btn-primary btn-lg" required="required" onclick="getBottle()">Get A bottle</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="lib/js/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/js/fliplightbox.min.js"></script>
+  <script type="text/javascript">
+
+    var NebPay = require("nebpay");
+    var nebPay = new NebPay();
+    var dappAddress = "n1oYWLPJtfbFQsavkrPww4HZyBHSfDDyuXh"
+    var nebulas = require("nebulas"),
+    Account = nebulas.Account,
+    neb = new nebulas.Neb();
+    neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+
+    function getBottle(){
+        var from = Account.NewAccount().getAddressString();
+        var subject = $("#subject").val();
+        var value = "0";
+        var nonce = "0"
+        var gas_price = "1000000"
+        var gas_limit = "2000000"
+        var callFunction = "get";
+        var callArgs = "[\"" + subject + "\"]";
+        var contract = {
+            "function": callFunction,
+            "args": callArgs
+        }
+
+        neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+            getBottleMessage(resp)
+        }).catch(function (err) {
+            console.log("error:" + err.message)
+        })
+    }
+
+    function getBottleMessage(resp){
+      
+      var result = resp.result;
+      if (result === 'null'){
+          alert("Get driftbottle failed, please try again.");
+      }else{
+          try{
+                result = JSON.parse(result);
+          }catch (err){
+                console.log(err);
+          }
+          alert(result.content);
+      }
+    }
+  </script>
+
+</body>
+
+</html>
