@@ -56,11 +56,11 @@
 
     var NebPay = require("nebpay");
     var nebPay = new NebPay();
-    var dappAddress = "n1oYWLPJtfbFQsavkrPww4HZyBHSfDDyuXh"
+    var dappAddress = "n1eAhC3c1m3aSsFiLfXshkEtyV3fFdLzpKZ";
     var nebulas = require("nebulas"),
     Account = nebulas.Account,
     neb = new nebulas.Neb();
-    neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+    neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
 
     function getBottle(){
         var from = Account.NewAccount().getAddressString();
@@ -91,8 +91,9 @@
       }else{
           try{
                 result = JSON.parse(result);
+                //console.log(result);
           }catch (err){
-                console.log(err);
+                alert(err.message);
           }
           alert(result.content);
       }
